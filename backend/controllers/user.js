@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 exports.signup = (req, res, next) => {
+    if (!/^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/.test(req.body.email)) {   // Test password strength
+        return res.status(401).json({ error: 'veuillez renseigner une adresse mail correcte !' });
+      } else {
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
         const user = new User({
@@ -16,6 +19,7 @@ exports.signup = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
     })
     .catch(error => res.status(500).json({ error }));
+}
 };
 
 exports.login = (req, res, next) => {
